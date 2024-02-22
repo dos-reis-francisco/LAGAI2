@@ -61,6 +61,7 @@ In summary :
 (see https://doi.org/10.1016/j.ijsolstr.2022.111702 for detailed explanations of genetic algorithm, https://doi.org/10.1016/j.softx.2020.100446 for lattice homogenization, preprint submitted explain the embedding)
 
 ### HOW TO USE
+execute in MATLAB
 ~~~
 CreateDatas(filename,number,seed,topology)
 ~~~
