@@ -14,6 +14,7 @@ Note : this repository is for reviewer eyes only of preprint article "Deep learn
     - [HOW TO USE](#how-to-use-1)
   - [3. USE of trained NN Part](#3-use-of-trained-nn-part)
     - [Summary](#summary-2)
+    - [HOW TO USE](#how-to-use-2)
 
 
 ## Introduction
@@ -105,7 +106,14 @@ Note : the DCNN code is written in python, but the disembedding of 3D Matrix obt
   * save_dir : name of the directory containing the weights of the trained NN
 * To avoid physically impossible material target (example Elastic modulus too high vs density), before call of decoder NN, the module of the targets are restricted to the hypervolume define by the initial database. 
 * DCNN is called with restricted values of target to generate 3D Matrix containing the lattice. 
-* each 3D Matrix generated is disembedded into a lattice. Datas of the lattices are saved into an output directy, in csv files  
-* in addition closest lattice of the initial database is extracted. 
+* each 3D Matrix generated is disembedded into a lattice. 
+* Datas of the lattices generated are saved into output directy, in csv files  
+* additionnaly closest lattice from the initial database is extracted.
 * homogenized mechanical values are calculated
+
+### HOW TO USE
+Just call with python 
+~~~
+LAGAI2_USECASE.py
+~~~
 
