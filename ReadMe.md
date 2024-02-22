@@ -12,7 +12,8 @@ Note : this repository is for reviewer eyes only of preprint article "Deep learn
   - [2. Training NN part](#2-training-nn-part)
     - [Summary](#summary-1)
     - [HOW TO USE](#how-to-use-1)
-  - [3. USE of trained NN Part](#3-use-of-trained-nn-part)
+  - [3. DCNN USE Part](#3-dcnn-use-part)
+    - [Preliminary remarks](#preliminary-remarks)
     - [Summary](#summary-2)
     - [HOW TO USE](#how-to-use-2)
 
@@ -21,7 +22,7 @@ Note : this repository is for reviewer eyes only of preprint article "Deep learn
 The code is divided into three parts :
 1. The database generation part
 2. The training NN part
-3. The NN use part
+3. The DCNN use part
 
 These parts are detailed below. The reader who want to try only the trained DCNN can jump into part three.
 Before that, in order to execute the software, user must verify if compatible software is installed. 
@@ -76,7 +77,7 @@ Example :
 CreateDatas("database24.h5",100000,2,"triangle")
 ~~~
 Create a database of 100000 samples stored in the file "database24.h5"
-(Please note that for this calculation it takes about 240h on my computer. The reader who just want to try the DCNN code can jump into part three "use of DCNN code")
+(Please note that for this calculation it takes about 240h on my computer. A database of 10000 to 50000 samples is sufficient to train the NN. The reader who just want to try a trained NN code can jump into part three "DCNN use part")
 
 ## 2. Training NN part 
 ### Summary 
@@ -89,6 +90,7 @@ Once it's trained the weights of the decoder are stored in a special directory.
   * number_element=100000
   * number_train_samples=95000
   * number_test_samples=5000
+* or you can used proposed datas
 
 according to the filename and number of samples.
 Then execute the python file  
@@ -97,14 +99,17 @@ LAGAI2_TRAIN.py
 ~~~
 the python code will store the trained weights in a directory actually called "decoder_weights".
 See the preprint for more explanations on how the DCNN is constituted. 
-## 3. USE of trained NN Part
-Note : the DCNN code is written in python, but the disembedding of 3D Matrix obtained requires call to Matlab engine from python. This import library must be installed before.
+## 3. DCNN USE Part
+### Preliminary remarks
+1. the DCNN code is written in python, but the disembedding of 3D Matrix obtained requires call to Matlab engine from python. This Matlab engine import library must be installed before use.
+2. The directory "decoder_weights" must be filled before use of this part. One can use the furnished weights (from author previous trained NN) or follow part 1 and 2 described before. 
 
 ### Summary 
 * firstly edit the parameters in the beginning of **_LAGAI2_USECASE.py_** file, at least :
   * MechDesired : this is a numpy array containing the targets one want to experiment
   * filedatabase : name of the initial database
   * save_dir : name of the directory containing the weights of the trained NN
+* or you can used proposed datas
 * To avoid physically impossible material target (example Elastic modulus too high vs density), before call of decoder NN, the module of the targets are restricted to the hypervolume define by the initial database. 
 * DCNN is called with restricted values of target to generate 3D Matrix containing the lattice. 
 * each 3D Matrix generated is disembedded into a lattice. 
