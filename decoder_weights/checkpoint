@@ -1,0 +1,2 @@
+model_checkpoint_path: "LAGAI2_decoder.tf"
+all_model_checkpoint_paths: "LAGAI2_decoder.tf"
