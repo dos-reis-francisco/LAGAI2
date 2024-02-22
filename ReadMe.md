@@ -110,12 +110,17 @@ See the preprint for more explanations on how the DCNN is constituted.
   * filedatabase : name of the initial database
   * save_dir : name of the directory containing the weights of the trained NN
 * or you can used proposed datas
-* To avoid physically impossible material target (example Elastic modulus too high vs density), before call of decoder NN, the module of the targets are restricted to the hypervolume define by the initial database. 
+* To avoid physically impossible material target (example Elastic modulus too high vs low density), before call of decoder NN, the module of the targets are restricted to the hypervolume define by the initial database. (These restricted values are stored in variable "MechAttainable" in the code)
 * DCNN is called with restricted values of target to generate 3D Matrix containing the lattice. 
 * each 3D Matrix generated is disembedded into a lattice. 
-* Datas of the lattices generated are saved into output directy, in csv files  
-* additionnaly closest lattice from the initial database is extracted.
+* Datas of the lattices generated are saved into output directy, in csv files format
+* additionnaly closest lattice from the initial database is extracted. Datas are also saved in csv format.
+* svg graphic output is created from NN generated lattice and initial database 
 * homogenized mechanical values are calculated
+
+The two graphic svg files allow comparison between initial database lattice and generated one by NN.
+
+The homogenized mechanical values obtained can be also compared with attainable values calculated and initial target asked. 
 
 ### HOW TO USE
 Just call with python 
