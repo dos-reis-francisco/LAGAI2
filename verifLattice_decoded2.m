@@ -66,5 +66,10 @@ function y_decoded=verifLattice_decoded2(outputDirectory,filename,n,name_data, s
     mech=mechanic_moduli(MS4);
     y_decoded=[mech([1,2,3,6]),rho];
 
+    fileID = fopen(dirDisembeddedCsv+"decoded_results.txt",'w');
+    fprintf(fileID,"Homogenized values\n");
+    fprintf(fileID,"[   Ex   ,     Ey  ,   Gxy   ,  nuyx   ,   rho*  ]\n");
+    fprintf(fileID," %8.2f,",y_decoded);
     disp(["y decoded:",y_decoded]);
+    fclose(fileID);
 end
