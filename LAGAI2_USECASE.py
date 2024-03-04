@@ -23,8 +23,6 @@ import datetime
 import LAGAI2MODULES as L2M
 import matlab.engine
 
-fileDatabase='database24.h5'
-number_element=50000
 filename_decoded='data24_decoded.h5'
 
 MechDesired=np.array([15000,15000,4000,0.3,0.2,\
@@ -35,6 +33,9 @@ MechDesired=np.array([15000,15000,4000,0.3,0.2,\
                       10000,10000,10000,0.3,0.15,\
                       3000,3000,1000,0.3,0.05])
 nMechDesired=int(MechDesired.shape[0]/5)
+
+MechMinimum=np.array([500,500,200,-1,0.02])
+MechMaximum=np.array([20000,20000,10000,1.0,0.2])
 
 model_name = "LAGAI2_decoder"
 save_dir = "decoder_weights"
@@ -100,33 +101,22 @@ filename = model_name + '.tf'
 filepath = os.path.join(save_dir, filename)
 decoder.load_weights(filepath)
 
-# Recherche des lattices proches des 
-# cibles dans le cloud initial
-
-eng = matlab.engine.start_matlab()
-
-MechAttainable=np.zeros([nMechDesired,5])
-
+# Verify limits of mechanical entry datas
+MechAttainable=MechDesired
+MechAttainable.resize(nMechDesired,5)
 for i in range(nMechDesired):
-    MechDesiredMatlab=matlab.double(initializer=MechDesired[i*5:i*5+5].tolist(),
-                                size=[1,5],is_complex=False)  
-    [yAttainableMatlab,index]=eng.ClosedDatasHdf5(fileDatabase,"/train_y",MechDesiredMatlab,nargout=2)
-    MechAttainable[i,:]=np.array(yAttainableMatlab).flatten()
-    axisOn=1
-    output_dir_lattice_database=output_dir+"lattice_database"+str(i)+"/"
-    os.makedirs(output_dir_lattice_database, exist_ok=True)
-    time.sleep(1) # pause pour ralentir le code, le temps de 
-   
-    y_decodedMatlab=eng.verifLattice_decoded2(output_dir_lattice_database,fileDatabase,index,"/train_data",float(2),float(axisOn))
-    
-    print("Case ",i,":\nDesired :",MechDesired[i*5:i*5+5])
-    print("Close value initial database :",MechAttainable[i,:])
+    for j in range(5):
+        if MechDesired[i,j] < MechMinimum[j]:
+            MechDesired[i,j] = MechMinimum[j]
+        if MechDesired[i,j] > MechMaximum[j]:
+            MechDesired[i,j] = MechMaximum[j]
 
-
+# normalisation of the mechanical entry datas
 sizeXDecoded=input_shape[0]*input_shape[1]*input_shape[2]
 arrayDataDecoded=np.zeros((nMechDesired,sizeXDecoded))    
 y_code=L2M.code_continu(MechAttainable,nMechDesired)
 
+# decode lattice using trained NN targetting the entry mechanical datas
 for i in range(nMechDesired):
     y_label=y_code[i,:].reshape(1,5)
     arrayDataDecoded[i,:] = decoder.predict(y_label).reshape(1,sizeXDecoded)
@@ -138,19 +128,23 @@ L2M.save_data(dirFileDecodedHdf5, "/MechDesired", MechDesired.flatten())
 L2M.save_data(dirFileDecodedHdf5, "/MechAttainable", MechAttainable.flatten())
 L2M.save_data(dirFileDecodedHdf5,"/datas",arrayDataDecoded.flatten())
 
-# Verification des lattice generes par le decodeur NN
-# par lecture des donnees dans le fichier hdf5,
-# a partir de ces donnees, reconstruction du lattice par Matlab
-# et homogeneisation 
+# Verification of lattice decoded NN using MATLAB code
+# Read of hdf5 file containing the lattice decoded by the NN
+# from this datas extraction of the topology of the lattice in various csv files
+# homogenization 
+# obtention of a figure of the lattice
+eng = matlab.engine.start_matlab()
 arrayYDecoded=np.zeros((nMechDesired,5))
 
 axisOn=1
 for i in range(nMechDesired):   # liste des cibles mecaniques atteignables
     output_dir_lattice_NN=output_dir+"lattice_NN"+str(i)+"/"
     os.makedirs(output_dir_lattice_NN, exist_ok=True)
+    print("value wanted :", MechAttainable[i,:])
     y_decodedMatlab=eng.verifLattice_decoded2(output_dir_lattice_NN,dirFileDecodedHdf5,float(i+1),"/datas",float(2),float(axisOn))
     arrayYDecoded[i,:]=np.array(y_decodedMatlab)[0]
-    print("y value decoded :", arrayYDecoded[i,:])
+
+    
     
 L2M.save_data(dirFileDecodedHdf5,"/arrayYDecoded",arrayYDecoded.flatten())
 

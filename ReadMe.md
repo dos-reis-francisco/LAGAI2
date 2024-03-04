@@ -6,26 +6,14 @@ Note : this repository is for reviewer eyes only of preprint article "Deep learn
   - [Preliminary informations](#preliminary-informations)
     - [hardware configuration used by author](#hardware-configuration-used-by-author)
     - [Software configuration used by author](#software-configuration-used-by-author)
-  - [1. Database generation part](#1-database-generation-part)
+  - [DCNN USE](#dcnn-use)
+    - [Preliminary remarks](#preliminary-remarks)
     - [Summary](#summary)
     - [HOW TO USE](#how-to-use)
-  - [2. Training NN part](#2-training-nn-part)
-    - [Summary](#summary-1)
-    - [HOW TO USE](#how-to-use-1)
-  - [3. DCNN USE Part](#3-dcnn-use-part)
-    - [Preliminary remarks](#preliminary-remarks)
-    - [Summary](#summary-2)
-    - [HOW TO USE](#how-to-use-2)
 
 
 ## Introduction
-The code is divided into three parts :
-1. The database generation part
-2. The training NN part
-3. The DCNN use part
-
-These parts are detailed below. The reader who want to try only the trained DCNN can jump into part three.
-Before that, in order to execute the software, user must verify if compatible software is installed. 
+Before use, in order to execute the software, user must verify if compatible software is installed. 
 
 ## Preliminary informations
 ### hardware configuration used by author
@@ -48,79 +36,23 @@ The code was written essentially in two langage : MATLAB and Python.
   * cudnn 8.1
   * cuda toolkit 11.2
 
-## 1. Database generation part
-### Summary
-This part is created using MATLAB. 
-In summary :
-1. A random target of mechanical values is generated :[Ex, Ey, Gxy,nuyx,rho]
-2. The algorithm search for the lattice with mechanical homogenized values closest to target
-   * it use for search, a genetic algorithm  combined with homogenization
-3. Once lattice is found it's embedded in a 3D Matrix
-4. loop to 1. until total samples are generated
-5. store all 3D matrix samples in a hdf5 file
-
-(see https://doi.org/10.1016/j.ijsolstr.2022.111702 for detailed explanations of genetic algorithm, https://doi.org/10.1016/j.softx.2020.100446 for lattice homogenization, preprint submitted explain the embedding)
-
-### HOW TO USE
-execute in MATLAB
-~~~
-CreateDatas(filename,number,seed,topology)
-~~~
-with :
-- filename : name of the hdf5 file database to be created
-- number : number of sample of the database
-- seed : value of number of subdivision of the basic cell (2 is advised)
-- topology : "triangle" is the only topology implemented yet
-
-Example :
-~~~
-CreateDatas("database24.h5",100000,2,"triangle")
-~~~
-Create a database of 100000 samples stored in the file "database24.h5"
-(Please note that for this calculation it takes about 240h on my computer. A database of 10000 to 50000 samples is sufficient to train the NN. The reader who just want to try a trained NN code can jump into part three "DCNN use part")
-
-## 2. Training NN part 
-### Summary 
-In this part one train the DCNN with the previous database. 
-Once it's trained the weights of the decoder are stored in a special directory.
-
-### HOW TO USE
-* firstly : edit the parameters in the beginnig of the file **_LAGAI2_TRAIN.py_**,  at least :
-  * filename_database="database24.h5"
-  * number_element=100000
-  * number_train_samples=95000
-  * number_test_samples=5000
-* or you can used proposed datas
-
-according to the filename and number of samples.
-Then execute the python file  
-~~~
-LAGAI2_TRAIN.py
-~~~
-the python code will store the trained weights in a directory actually called "decoder_weights".
-See the preprint for more explanations on how the DCNN is constituted. 
-## 3. DCNN USE Part
+## DCNN USE 
 ### Preliminary remarks
 1. the DCNN code is written in python, but the disembedding of 3D Matrix obtained requires call to Matlab engine from python. This Matlab engine import library must be installed before use.
-2. The directory "decoder_weights" must be filled before use of this part. One can use the furnished weights (from author previous trained NN) or follow part 1 and 2 described before. 
+2. The directory "decoder_weights" must be filled before use of this part. One can use the furnished weights (from author previous trained NN)
 
 ### Summary 
 * firstly edit the parameters in the beginning of **_LAGAI2_USECASE.py_** file, at least :
   * MechDesired : this is a numpy array containing the targets one want to experiment
-  * filedatabase : name of the initial database
   * save_dir : name of the directory containing the weights of the trained NN
 * or you can used proposed datas
-* To avoid physically impossible material target (example Elastic modulus too high vs low density), before call of decoder NN, the module of the targets are restricted to the hypervolume define by the initial database. (These restricted values are stored in variable "MechAttainable" in the code)
+* To limit physically impossible material target, example Elastic modulus too high, before call of decoder NN, the module of the targets are restricted to mini,maxi values. However, the user's attention is drawn to the fact that not all combinations are physically possible. 
 * DCNN is called with restricted values of target to generate 3D Matrix containing the lattice. 
-* each 3D Matrix generated is disembedded into a lattice. 
+* each 3D Matrix generated is disembedded 
 * Datas of the lattices generated are saved into output directy, in csv files format
-* additionnaly closest lattice from the initial database is extracted. Datas are also saved in csv format.
 * svg graphic output is created from NN generated lattice and initial database 
-* homogenized mechanical values are calculated
+* homogenized mechanical values of the generated lattice are calculated
 
-The two graphic svg files allow comparison between initial database lattice and generated one by NN.
-
-The homogenized mechanical values obtained can be also compared with attainable values calculated and initial target asked. 
 
 ### HOW TO USE
 Just call with python 
