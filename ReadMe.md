@@ -1,5 +1,5 @@
-# ReadMe for Github repository of LAGAI Project
-Note : this repository is for reviewer eyes only of preprint article "Deep learning, deconvolutional neural network inverse design of strut-based lattice metamaterials"
+# ReadMe for the Github repository of the SLAGAI model
+Note : This repository relates to the preprint of the article "Deep learning, deconvolutional neural network inverse design of strut-based lattice metamaterials".
 
 - [ReadMe for Github repository of LAGAI Project](#readme-for-github-repository-of-lagai-project)
   - [Introduction](#introduction)
@@ -13,50 +13,50 @@ Note : this repository is for reviewer eyes only of preprint article "Deep learn
 
 
 ## Introduction
-Before use, in order to execute the software, user must verify if compatible software is installed. 
+The De-Convolutiona Neural Network (DCNN) model computes strut-based lattice patterns that optimally fit a set of mechanical targets, namely the set of normal moduli (Ex, Ey), the shear modulus (Gxy), Poisson's ratio and relative density of the metamaterial. Before the use of the DCNN model, compatible software modules have to be installed. A summary of the softare requirements, program execution and associated results is provided below.
 
 ## Preliminary informations
-### hardware configuration used by author
+### Hardware configuration used for the execution of the DCNN
 The code was executed on a PC :
 * AMD Ryzen 7 2700 (8 cores / 3.1 GHz)
-* 32 Go RAM
+* 32 GBy RAM
 * B450 Mainboard 
 * RTX 4060 GPU
   
-### Software configuration used by author
-The code was written essentially in two langage : MATLAB and Python.
+### Software configuration 
+The DCNN code combines software modules written in Python and Matlab. 
 
-* PC computer with :
-  * windows 11
-  * python 3.9
+* For the execution, the installation of the following software parts is required:
+  * Windows 11
+  * Python 3.9
   * Visual studio code
-   * Matlab 2021b with matlab engine python library installed (allow call to Matlab engine from python)
-  * tensorflow 2.9
+  * Matlab 2021b with matlab engine python library (allowing calls to the Matlab engine from python)
+  * Tensorflow 2.9
   * Keras 
-  * cudnn 8.1
-  * cuda toolkit 11.2
+  * Cudnn 8.1
+  * Cuda toolkit 11.2
 
 ## DCNN USE 
 ### Preliminary remarks
-1. the DCNN code is written in python, but the disembedding of 3D Matrix obtained requires call to Matlab engine from python. This Matlab engine import library must be installed before use.
-2. The directory "decoder_weights" must be filled before use of this part. One can use the furnished weights (from author previous trained NN)
+1. The DCNN code is written in python, but the disembedding of the 3D Matrix obtained requires the use of a set of Matlab routines (Matlab engine) which are directly called from the main python code. The relevant Matlab engine library must be therefore installed before use.
+2. The directory "decoder_weights" must be filled before the use of this part. The directory is filled with weights obtained from the network training.
 
 ### Summary 
-* firstly edit the parameters in the beginning of **_LAGAI2_USECASE.py_** file, at least :
-  * MechDesired : this is a numpy array containing the targets one want to experiment
-  * save_dir : name of the directory containing the weights of the trained NN
-* or you can used proposed datas
-* To limit physically impossible material target, example Elastic modulus too high, before call of decoder NN, the module of the targets are restricted to mini,maxi values. However, the user's attention is drawn to the fact that not all combinations are physically possible. 
-* DCNN is called with restricted values of target to generate 3D Matrix containing the lattice. 
-* each 3D Matrix generated is disembedded 
-* Datas of the lattices generated are saved into output directy, in csv files format
-* svg graphic output is created from NN generated lattice and initial database 
-* homogenized mechanical values of the generated lattice are calculated
+* The target mechanical parameters are defined in the initial part of the **_LAGAI2_USECASE.py_** routine, as follows:
+  * MechDesired :The numpy array containing the mechanical targets in the following order: Ex, Ey, Gxy, nu, rho
+  * save_dir : The name of the directory containing the weights of the trained NN.
+* The target mechanical properties provided as default values in MechDesired assume steel with a 210000 MPa elastic modulus.
+* To limit physically impossible mechanical targets, e.g. exceptionally high elastic moduli requests, mechanical bounds on the upper and lower requests per parameters are set (MechMinimum, MechMaximum). It has to be noted that mechanical requests have to be further rationalized with respect to the underlying feasible mechanical space, as detailed in the article. 
+* The DCNN model generates the 3D Matrix containing the lattice topology for the requested mechanical performance. 
+* The 3D Matrix generated is disembedded employing the Matlab engine routines. 
+* The generated lattice data are saved into an output directy, its content detailed below.
 
 
 ### HOW TO USE
-Just call with python 
+The main Python script to be called is the following:
 ~~~
 LAGAI2_USECASE.py
 ~~~
 
+## DCNN RESULTS
+An output folder is created, with a series of subfolders that are equal to the number of mechanical performance combinations requested in LAGAI2_USECASE.py (parameter:MechDesired). In the output subfolders, the nodal displacements of the initially triangulated lattice (nodes.csv) following the convention of Figure 5 of the associated manuscript, the element thickness distribution (Tb.csv) and the set of effective mechanical properties () of the reconstructed lattice pattern, along with a svg graphical output file are provided.
