@@ -13,7 +13,7 @@ Note : This repository relates to the preprint of the article "Deep learning, de
   - [DCNN results](#dcnn-results)
 
 ## Introduction
-The De-Convolutiona Neural Network (DCNN) model computes strut-based lattice patterns that optimally fit a set of mechanical targets, namely the set of normal moduli (Ex, Ey), the shear modulus (Gxy), Poisson's ratio and relative density of the metamaterial. Before the use of the DCNN model, compatible software modules have to be installed. A summary of the softare requirements, program execution and associated results is provided below.
+The De-Convolutiona Neural Network (DCNN) model computes strut-based lattice patterns that optimally fit a set of mechanical targets, namely the set of normal moduli (Ex, Ey), the shear modulus (Gxy), Poisson's ratio and relative density of the metamaterial. Before the use of the DCNN model, compatible software modules have to be installed. A summary of the softare requirements, program execution and associated results is provided below.  
 
 ## Preliminary information
 ### Hardware configuration used for the execution of the DCNN
@@ -27,12 +27,9 @@ The code was executed on a PC:
 The DCNN code combines software modules written in Python and Matlab. 
 
 * For the execution, the installation of the following software parts is required:
-  * Windows 11
   * Python 3.9
-  * Visual studio code
-  * Matlab 2021b with matlab engine python library (allowing calls to the Matlab engine from python)
+  * Matlab 2021b with matlab engine python library 
   * Tensorflow 2.9
-  * Keras 
   * Cudnn 8.1
   * Cuda toolkit 11.2
 
@@ -59,4 +56,4 @@ LAGAI2_USECASE.py
 ~~~
 
 ## DCNN results
-An output folder is created, with a series of subfolders that are equal to the number of mechanical performance combinations requested in LAGAI2_USECASE.py (parameter:MechDesired). In the output subfolders, the nodal displacements of the initially triangulated lattice (nodes.csv) following the convention of Figure 5 of the associated manuscript, the element thickness distribution (Tb.csv) and the set of effective mechanical properties () of the reconstructed lattice pattern, along with a svg graphical output file are provided.
+An output folder is created, with a series of subfolders that are equal to the number of mechanical performance combinations requested in LAGAI2_USECASE.py (parameter:MechDesired). In the output subfolders, the nodal displacements of the initially triangulated lattice (nodes.csv) following the convention of Figure 5 of the associated manuscript, the element thickness distribution (Tb.csv) and the set of effective mechanical properties (decoded_results.txt) of the reconstructed lattice pattern, along with a svg graphical output file are provided.
