@@ -1,0 +1,3 @@
+Homogenized values
+[   Ex   ,     Ey  ,   Gxy   ,  nuyx   ,   rho*  ]
+ 15719.73, 15774.87,  4378.19,     0.26,     0.20,
