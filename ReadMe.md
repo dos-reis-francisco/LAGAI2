@@ -48,6 +48,7 @@ The DCNN code combines software modules written in Python and Matlab.
 * The 3D Matrix generated is disembedded employing the Matlab engine routines. 
 * The generated lattice data are saved into an output directy, its content detailed below.
 
+The module is self-contained and does not consider the initial database for its execution. The initial database, the code for its development and for the training of the DCNN model can be found in https://data.mendeley.com/preview/vb25pch8mp?a=b9d827d5-f1ab-4ead-9edc-ee09eb9820d7. 
 
 ### How to use
 The main Python script to be called is the following:
